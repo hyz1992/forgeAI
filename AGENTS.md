@@ -12,7 +12,7 @@
 
 ## 开发流程顺序
 
-1. **需求**：用户只需提供产品/项目的粗略想法，执行 **/fi-init** 后通过对话自动生成 `requirement-template.md`，生成后**自动运行** `validate.py requirement` 做校验。校验通过再进入下一步，避免下游阶段（架构、合同、测试）拿到残缺需求而产生错误输出。
+1. **需求**：用户只需提供产品/项目的粗略想法，执行 **/fi-init** 后通过对话自动生成 `docs/requirements.md`，生成后**自动运行** `validate.py requirement` 做校验。校验通过再进入下一步，避免下游阶段（架构、合同、测试）拿到残缺需求而产生错误输出。
 2. **架构**：根据需求生成 `docs/architecture.md`（/fi-plan）。
 3. **合同**：根据架构生成 `server/src/contracts/` 下的 TypeScript 类型（/contract）。
 4. **测试**：根据 contracts 生成 TDD 测试（/fi-test）。

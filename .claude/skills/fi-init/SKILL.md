@@ -1,16 +1,16 @@
 ---
 name: fi-init
-description: 通过对话收集项目需求，自动生成 requirement-template.md
+description: 通过对话收集项目需求，自动生成 docs/requirements.md
 trigger: /fi-init
 dependencies:
   - superpowers:brainstorming
 references:
-  - ../shared-references/requirement-template-structure.md
+  - ../shared-references/requirements-structure.md
 ---
 
 # 需求收集 Skill
 
-用户**无需手写需求文档**，只需提供产品/项目的粗略想法，通过对话即可自动生成 `requirement-template.md`。
+用户**无需手写需求文档**，只需提供产品/项目的粗略想法，通过对话即可自动生成 `docs/requirements.md`。
 
 ## 前置条件
 
@@ -45,7 +45,7 @@ python .claude/scripts/install.py
 ```
 @superpowers:brainstorming
 
-目标：收集项目需求，生成 requirement-template.md
+目标：收集项目需求，生成 docs/requirements.md
 
 探索重点：
 1. 项目目标（一句话说明）
@@ -68,11 +68,11 @@ python .claude/scripts/install.py
 
 ### Step 9: 生成文档
 
-用户确认后，在项目根目录生成 `requirement-template.md`。生成时须按 `.claude/shared-references/requirement-template-structure.md` 所定义的结构与必填项输出，确保含项目名称、目标、类型，至少一个核心功能（含描述、优先级、验收标准），以及至少一条整体验收标准，以便通过后续 `validate.py requirement` 校验。
+用户确认后，生成 `docs/requirements.md`（若 `docs/` 目录不存在则先创建）。生成时须按 `.claude/shared-references/requirements-structure.md` 所定义的结构与必填项输出，确保含项目名称、目标、类型，至少一个核心功能（含描述、优先级、验收标准），以及至少一条整体验收标准，以便通过后续 `validate.py requirement` 校验。
 
 ### Step 10: 自动校验并完成
 
-生成 `requirement-template.md` 后，**必须自动执行**（无需用户手动运行）：
+生成 `docs/requirements.md` 后，**必须自动执行**（无需用户手动运行）：
 
 ```bash
 python .claude/scripts/validate.py requirement
@@ -80,10 +80,10 @@ python .claude/scripts/validate.py requirement
 
 - **校验通过**：提示下一步：
   ```
-  ✅ 需求文档已生成并校验通过：requirement-template.md
+  ✅ 需求文档已生成并校验通过：docs/requirements.md
   下一步：/fi-plan 开始架构设计
   ```
-- **校验失败**：根据脚本输出的缺失项（如缺少项目名称、目标、核心功能、验收标准）补充或修正 `requirement-template.md`，再次运行上述校验命令；若多次仍不通过，提示用户补全后重新执行 `/fi-init`。
+- **校验失败**：根据脚本输出的缺失项（如缺少项目名称、目标、核心功能、验收标准）补充或修正 `docs/requirements.md`，再次运行上述校验命令；若多次仍不通过，提示用户补全后重新执行 `/fi-init`。
 
 ## 询问策略
 
@@ -104,9 +104,9 @@ python .claude/scripts/validate.py requirement
 ## 与其他 Skill 的关系
 
 ```
-/fi-init → 生成 requirement-template.md
+/fi-init → 生成 docs/requirements.md
   ↓
-/fi-plan → 读取 requirement-template.md，生成架构设计
+/fi-plan → 读取 docs/requirements.md，生成架构设计
   ↓
 ... 后续流程
 ```

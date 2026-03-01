@@ -29,7 +29,7 @@ if sys.platform == 'win32':
 
 # 路径配置
 BASE_DIR = Path(__file__).parent.parent.parent
-REQUIREMENT_FILE = BASE_DIR / "requirement-template.md"
+REQUIREMENT_FILE = BASE_DIR / "docs" / "requirements.md"
 CONSTITUTION_FILE = BASE_DIR / ".claude" / "shared-references" / "constitution.md"
 
 

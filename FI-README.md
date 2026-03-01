@@ -33,10 +33,10 @@ python .claude/scripts/install.py
 无需手写需求文档。只需向 Agent 说出产品/项目的**粗略想法**（例如「做一个用户管理系统，能注册登录、管理资料」），然后执行：
 
 ```bash
-/fi-init      # 通过对话整理你的想法，自动生成 requirement-template.md
+/fi-init      # 通过对话整理你的想法，自动生成 docs/requirements.md
 ```
 
-Agent 会通过少量问答补全信息，并生成结构化的 `requirement-template.md`，无需你逐项填写。
+Agent 会通过少量问答补全信息，并生成结构化的 `docs/requirements.md`，无需你逐项填写。
 
 ### 3. 按顺序执行后续阶段
 
@@ -107,7 +107,7 @@ ForgeAI/
 │   │
 │   ├── shared-references/         # 共享参考文档
 │   │   ├── constitution.md        # 工程宪法
-│   │   ├── requirement-template-structure.md  # 需求文档结构（供 fi-init 生成用）
+│   │   ├── requirements-structure.md  # 需求文档结构（供 fi-init 生成用）
 │   │   ├── tech-stack.md          # 技术栈规范
 │   │   ├── directory-structure.md # 目录结构规范
 │   │   ├── coding-standards.md    # 编码规范
@@ -128,7 +128,7 @@ ForgeAI/
 └── .gitignore
 ```
 
-根目录的 `requirement-template.md` 由 **/fi-init** 在首次（或重新）收集需求时生成，仓库中不预置；生成结构见 `.claude/shared-references/requirement-template-structure.md`。
+`docs/requirements.md` 由 **/fi-init** 在首次（或重新）收集需求时生成，仓库中不预置；生成结构见 `.claude/shared-references/requirements-structure.md`。
 
 运行 `install.py` 后会在项目根目录创建 `.cursor/skills`、`.agents/skills` 的符号链接（或 Windows junction），指向 `.claude/skills`，便于 Cursor、Codex 发现 Skills。
 

@@ -1,6 +1,6 @@
 ---
 name: fi-plan
-description: 根据 requirement-template.md 生成项目架构设计
+description: 根据 docs/requirements.md 生成项目架构设计
 trigger: /fi-plan
 dependencies:
   - superpowers:writing-plans
@@ -12,18 +12,18 @@ references:
 
 # 架构设计 Skill
 
-根据 `requirement-template.md` 生成项目架构设计。
+根据 `docs/requirements.md` 生成项目架构设计。
 
 ## 前置条件
 
-- 根目录存在 `requirement-template.md` 且内容完整（通常由用户执行 `/fi-init` 后根据粗略想法自动生成）
+- 存在 `docs/requirements.md` 且内容完整（通常由用户执行 `/fi-init` 后根据粗略想法自动生成）
 - 如果不存在或内容不完整，提示用户先运行 `/fi-init`
 
 ## 前置条件验证
 
 在执行前必须依次验证：
 
-1. 检查根目录是否存在 `requirement-template.md`；不存在则提示用户先运行 `/fi-init`。
+1. 检查 `docs/requirements.md` 是否存在；不存在则提示用户先运行 `/fi-init`。
 2. 运行 `python .claude/scripts/validate.py requirement`。
 3. 若校验失败，停止执行并提示用户补充需求或重新运行 `/fi-init`。
 
@@ -31,7 +31,7 @@ references:
 
 ### Step 1: 读取并校验需求
 
-1. 读取 `requirement-template.md`
+1. 读取 `docs/requirements.md`
 2. 运行校验脚本：
    ```bash
    python .claude/scripts/validate.py requirement

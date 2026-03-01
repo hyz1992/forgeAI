@@ -36,6 +36,7 @@ def run_command(
     """执行命令"""
     try:
         # Windows 需要 shell=True 来正确执行某些命令
+        # 显式指定 UTF-8 编码避免 GBK 解码错误
         if sys.platform == 'win32':
             return subprocess.run(
                 cmd,
@@ -43,6 +44,8 @@ def run_command(
                 text=True,
                 timeout=timeout,
                 shell=True,
+                encoding='utf-8',
+                errors='replace',
             )
         else:
             return subprocess.run(
@@ -50,6 +53,8 @@ def run_command(
                 capture_output=capture,
                 text=True,
                 timeout=timeout,
+                encoding='utf-8',
+                errors='replace',
             )
     except subprocess.TimeoutExpired:
         return subprocess.CompletedProcess(cmd, -1, "", "Command timed out")
@@ -194,11 +199,13 @@ def install_skill(skill: dict) -> bool:
         return True
     else:
         # 检查是否因为已安装而失败
-        stderr_lower = result.stderr.lower()
-        if "already" in stderr_lower or "exists" in stderr_lower:
+        output = (result.stdout + result.stderr).lower()
+        if "already" in output or "exists" in output:
             print(f"   ✅ 已安装")
             return True
-        print(f"   ❌ 安装失败: {result.stderr}")
+        # 合并 stdout 和 stderr 显示完整错误信息
+        error_msg = result.stderr.strip() or result.stdout.strip() or "未知错误"
+        print(f"   ❌ 安装失败: {error_msg}")
         return False
 
 
