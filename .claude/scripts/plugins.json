@@ -1,0 +1,8 @@
+[
+  {
+    "name": "superpowers",
+    "marketplace": "obra/superpowers-marketplace",
+    "package": "superpowers@superpowers-marketplace",
+    "description": "标准化软件开发流程（14个核心技能）"
+  }
+]

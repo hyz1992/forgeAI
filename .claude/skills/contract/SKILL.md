@@ -1,0 +1,84 @@
+---
+name: contract
+description: 根据架构设计生成类型定义和接口合同
+trigger: /contract
+dependencies:
+  - superpowers:writing-plans
+references:
+  - ../shared-references/constitution.md
+  - ../shared-references/tech-stack.md
+  - ../shared-references/directory-structure.md
+---
+
+# 类型与接口合同 Skill
+
+根据架构设计生成类型定义和接口合同。
+
+## 前置条件
+
+- `docs/architecture.md` 存在且已确认
+- 架构设计完整，包含模块划分
+
+## 前置条件验证
+
+在执行前必须依次验证：
+
+1. 检查 `docs/architecture.md` 是否存在；不存在则提示用户先完成 `/fi-plan` 并确认架构。
+2. 确认架构文档包含关键章节：系统概述、模块划分、API 设计（或等价内容）。
+3. 若验证不通过，停止执行并提示用户先完成架构设计。
+
+## 执行流程
+
+### Step 1: 读取架构设计
+
+1. 读取 `docs/architecture.md`
+2. 提取模块列表
+3. 识别数据实体
+4. 分析 API 接口
+
+### Step 2: 生成类型定义
+
+若 `server/src/contracts/` 不存在则先创建所需层级目录（如 `server/`、`server/src/`、`server/src/contracts/`），再在该目录下生成：
+- `api.types.ts` - 通用 API 类型
+- `{module}.types.ts` - 实体类型
+- `{module}.interfaces.ts` - 接口定义
+- `{module}.schemas.ts` - Zod 验证
+- `index.ts` - 统一导出
+
+### Step 3: 生成接口定义
+
+定义 Repository 和 Service 接口。
+
+### Step 4: 生成 Zod Schema
+
+用于请求验证的 Zod Schema。
+
+### Step 5: 生成后校验
+
+生成 contracts 后**必须自动执行**（无需用户手动运行）：
+
+- 在包含 `tsconfig.json` 的目录执行 `npx tsc --noEmit`（若存在 `server/tsconfig.json` 则在 server 下执行，同理 client 或根目录）。
+- **通过**：结束并提示下一步执行 `/fi-test`。
+- **失败**：根据类型报错修正类型或代码，再次运行上述命令，直至通过后再结束。
+
+## 类型设计原则
+
+参考 `shared-references/constitution.md`：
+
+1. **禁止 any** - 所有类型必须明确
+2. **接口优于类型** - 对象结构用 interface
+3. **只读优先** - 不可变数据用 readonly
+4. **命名规范** - 接口用 I 前缀，类型无前缀
+
+## 输出
+
+```
+server/src/contracts/
+├── api.types.ts
+├── {module}.types.ts
+├── {module}.interfaces.ts
+├── {module}.schemas.ts
+└── index.ts
+```
+
+（终验已在 Step 5 中执行，此处不再重复。）

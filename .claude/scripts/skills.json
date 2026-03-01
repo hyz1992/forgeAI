@@ -1,0 +1,33 @@
+[
+  {
+    "name": "frontend-design",
+    "package": "anthropics/skills/frontend-design",
+    "global": true,
+    "agent": "claude-code",
+    "description": "前端设计规范（Anthropic 官方）"
+  },
+  {
+    "name": "web-design-guidelines",
+    "package": "vercel-labs/agent-skills/web-design-guidelines",
+    "global": true,
+    "description": "网页设计规范"
+  },
+  {
+    "name": "remotion",
+    "package": "remotion-dev/skills",
+    "global": true,
+    "description": "Remotion 视频生成"
+  },
+  {
+    "name": "humanizer-zh",
+    "package": "baoyu-skills/humanizer-zh",
+    "global": true,
+    "description": "去除 AI 味，让文字更自然"
+  },
+  {
+    "name": "baoyu-skills",
+    "package": "jimliu/baoyu-skills",
+    "global": true,
+    "description": "内容生成工具包"
+  }
+]

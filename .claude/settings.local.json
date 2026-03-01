@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m py_compile .claude/scripts/install.py)",
+      "Bash(python -m py_compile .claude/scripts/validate.py)",
+      "Bash(python -m py_compile .claude/hooks/post-tool-use.py)",
+      "Bash(python -c \"import json; json.load(open('.claude/scripts/plugins.json', encoding='utf-8'))\")",
+      "Bash(python -c \"import json; json.load(open('.claude/scripts/skills.json', encoding='utf-8'))\")"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python .claude/hooks/post-tool-use.py \"{tool}\" \"{file_path}\""
+          }
+        ]
+      }
+    ]
+  }
+}
