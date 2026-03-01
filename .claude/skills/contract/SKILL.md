@@ -36,24 +36,33 @@ references:
 3. 识别数据实体
 4. 分析 API 接口
 
-### Step 2: 生成类型定义
+### Step 2: 生成服务端类型定义
 
-若 `server/src/contracts/` 不存在则先创建所需层级目录（如 `server/`、`server/src/`、`server/src/contracts/`），再在该目录下生成：
+若 `server/src/contracts/` 不存在则先创建所需层级目录，再在该目录下生成：
 - `api.types.ts` - 通用 API 类型
 - `{module}.types.ts` - 实体类型
 - `{module}.interfaces.ts` - 接口定义
 - `{module}.schemas.ts` - Zod 验证
 - `index.ts` - 统一导出
 
-### Step 3: 生成接口定义
+### Step 3: 生成前端类型定义（全栈项目）
+
+若项目包含前端（`client/` 存在），在 `client/src/contracts/` 下生成：
+- `api.types.ts` - API 请求/响应类型（与服务端保持一致）
+- `{module}.types.ts` - 实体类型
+- `index.ts` - 统一导出
+
+**类型共享原则**：前端类型应与服务端保持一致，可从服务端 contracts 复制或使用 monorepo 共享包。
+
+### Step 4: 生成接口定义
 
 定义 Repository 和 Service 接口。
 
-### Step 4: 生成 Zod Schema
+### Step 5: 生成 Zod Schema
 
 用于请求验证的 Zod Schema。
 
-### Step 5: 生成后校验
+### Step 6: 生成后校验
 
 生成 contracts 后**必须自动执行**（无需用户手动运行）：
 
@@ -72,6 +81,8 @@ references:
 
 ## 输出
 
+**服务端：**
+
 ```
 server/src/contracts/
 ├── api.types.ts
@@ -81,4 +92,13 @@ server/src/contracts/
 └── index.ts
 ```
 
-（终验已在 Step 5 中执行，此处不再重复。）
+**前端（全栈项目）：**
+
+```
+client/src/contracts/
+├── api.types.ts
+├── {module}.types.ts
+└── index.ts
+```
+
+（终验已在 Step 6 中执行，此处不再重复。）

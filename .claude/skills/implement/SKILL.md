@@ -35,7 +35,7 @@ references:
 2. 识别需要实现的功能
 3. 确定实现顺序
 
-**实现顺序：**
+**服务端实现顺序：**
 1. 基础工具函数
 2. 数据模型
 3. Repository 层
@@ -43,23 +43,48 @@ references:
 5. Controller 层
 6. 路由注册
 
-### Step 2: 逐个实现
+**前端实现顺序：**
+1. API 请求封装（`client/src/api/`）
+2. Pinia Store（`client/src/stores/`）
+3. Composables（`client/src/composables/`）
+4. 组件（`client/src/components/`）
+5. 页面（`client/src/pages/` 或 `client/src/views/`）
+6. 路由配置（`client/src/router/`）
 
-对于每个测试文件：
+### Step 2: 服务端实现
+
+对于每个服务端测试文件：
 1. 运行测试，查看失败原因
 2. 编写最小实现使测试通过
 3. 运行测试，确认通过
 4. 重构代码（可选）
 
-### Step 3: 持续验证
+### Step 3: 前端实现（全栈项目）
+
+若项目包含前端（`client/` 存在且有测试），对于每个前端测试文件：
+1. 运行测试，查看失败原因
+2. 编写最小实现使测试通过
+3. 运行测试，确认通过
+4. 重构代码（可选）
+
+**前端实现要点：**
+- API 请求使用 `fetch` 或 `axios`，类型来自 `client/src/contracts/`
+- Store 使用 Pinia，遵循 Composition API 风格
+- 组件使用 `<script setup lang=”ts”>` 语法
+
+### Step 4: 持续验证
 
 每实现一个模块后运行测试：
 
 ```bash
-npx vitest run
+# 服务端
+cd server && npx vitest run
+
+# 前端（如有）
+cd client && npx vitest run
 ```
 
-### Step 4: 完成前终验
+### Step 5: 完成前终验
 
 全部实现完成后，**必须自动执行**以下三项，**全部通过**才可视为实现完成：
 
@@ -69,7 +94,7 @@ npx vitest run
 
 执行范围：若存在 `server/` 或 `client/` 且其下有 `package.json` 或 `vitest.config.*` / `tsconfig.json`，则在各自目录下执行；否则在根目录执行。
 
-- **全部通过**：提示“实现完成，可进行 /fi-review 或先运行 /fi-fix 处理其他问题”。
+- **全部通过**：提示”实现完成，可进行 /fi-review 或先运行 /fi-fix 处理其他问题”。
 - **任一项失败**：继续修复或建议用户运行 `/fi-fix`，**不得**将本次会话标记为实现完成。
 
 ## 实现原则
@@ -83,6 +108,8 @@ npx vitest run
 
 ## 输出
 
+**服务端：**
+
 ```
 server/src/modules/
 └── {module}/
@@ -93,4 +120,22 @@ server/src/modules/
     └── index.ts
 ```
 
-（终验已在 Step 4 完成前终验中执行。）
+**前端（全栈项目）：**
+
+```
+client/src/
+├── api/
+│   └── {module}.ts          # API 请求封装
+├── stores/
+│   └── {module}.ts          # Pinia Store
+├── composables/
+│   └── use{Module}.ts       # Composable
+├── components/
+│   └── {Module}/            # 组件目录
+│       └── *.vue
+└── pages/                   # 页面（如使用 unplugin-vue-router）
+    └── {module}/
+        └── index.vue
+```
+
+（终验已在 Step 5 完成前终验中执行。）

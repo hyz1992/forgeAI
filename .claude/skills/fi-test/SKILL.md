@@ -38,16 +38,18 @@ references:
 2. 识别需要测试的功能点
 3. 生成测试计划
 
-### Step 3: 生成单元测试
+### Step 3: 生成服务端测试
 
-根据 `shared-references/testing-standards.md` 生成 Service 测试和 API 测试。
+根据 `shared-references/testing-standards.md` 生成：
+- **Service 测试**：单元测试，mock 依赖
+- **API 测试**：集成测试，验证端点
 
-### Step 3.5: 生成前端测试（全栈项目）
+### Step 4: 生成前端测试（全栈项目）
 
-若项目包含前端（`client/`），需同时生成：
+若项目包含前端（`client/`），**必须同时生成**前端测试：
 
 - **Vue 组件测试**：使用 `@vue/test-utils` + `vitest`，在 `client/tests/components/` 下为各页面/组件编写测试；覆盖渲染、用户交互、props/emits、插槽等。
-- **Pinia Store 测试**：在 `client/tests/stores/` 下为各 store 编写单元测试；mock  API 与依赖，验证 state、getters、actions。
+- **Pinia Store 测试**：在 `client/tests/stores/` 下为各 store 编写单元测试；mock API 与依赖，验证 state、getters、actions。
 - **Composable 测试**：在 `client/tests/composables/` 下为可复用的 composable 编写测试；隔离逻辑，验证输入输出与边界情况。
 
 模板要点：
@@ -55,7 +57,7 @@ references:
 - Store 测试：`setActivePinia(createPinia())`，实例化 store，断言 state 与 action 结果。
 - 遵循 `shared-references/testing-standards.md` 中的 AAA 与命名规范。
 
-### Step 4: 覆盖边界情况
+### Step 5: 覆盖边界情况
 
 确保测试覆盖：
 - 正常路径
@@ -64,15 +66,15 @@ references:
 - 空值处理
 - 并发场景
 
-### Step 4.5: 生成后自动校验
+### Step 6: 生成后自动校验
 
 生成测试文件后**必须自动执行**（无需用户手动运行）：
 
 - 在包含 vitest 配置的目录执行 `npx vitest run`（若存在 `server/vitest.config.*` 则在 server 下执行，同理 client 或根目录；多子项目则分别执行）。
-- **能运行且仅有断言失败**（因尚未实现）：视为符合预期，进入 Step 5 人工确认。
-- **运行失败**（语法错误、导入错误、配置错误等）：修正测试代码或配置，再次运行直至测试可执行；仅当“能跑且因未实现而失败”时才进入 Step 5。
+- **能运行且仅有断言失败**（因尚未实现）：视为符合预期，进入 Step 7 人工确认。
+- **运行失败**（语法错误、导入错误、配置错误等）：修正测试代码或配置，再次运行直至测试可执行；仅当”能跑且因未实现而失败”时才进入 Step 7。
 
-### Step 5: 人工确认
+### Step 7: 人工确认
 
 ```
 测试用例已生成，请查看 server/tests/（及如有前端则 client/tests/）

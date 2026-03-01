@@ -36,11 +36,21 @@ references:
 
 ### Step 2: 收集错误信息
 
+**多目录项目**：若存在 `server/` 和 `client/` 子目录，分别在各自目录下执行命令。
+
 ```bash
-npx vitest run 2>&1 | tee test-output.log
-npx tsc --noEmit 2>&1 | tee type-output.log
-npx eslint . 2>&1 | tee lint-output.log
+# 服务端
+cd server && npx vitest run 2>&1 | tee test-output.log
+cd server && npx tsc --noEmit 2>&1 | tee type-output.log
+cd server && npx eslint . 2>&1 | tee lint-output.log
+
+# 前端（如有）
+cd client && npx vitest run 2>&1 | tee test-output.log
+cd client && npx tsc --noEmit 2>&1 | tee type-output.log
+cd client && npx eslint . 2>&1 | tee lint-output.log
 ```
+
+**单目录项目**：在根目录执行上述命令（去掉 `cd server/client` 前缀）。
 
 ### Step 3: 分类错误
 
