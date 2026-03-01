@@ -30,18 +30,13 @@ references:
 
 ### Step 0: 检查并安装外部依赖
 
-在执行前，自动检查外部 Skills 是否已安装：
-
-```bash
-# 检查 superpowers plugin 是否已安装
-claude /plugin | grep -i superpowers
-```
-
-如果外部依赖未安装，提示用户是否安装。选择安装则执行：
+直接运行安装脚本，它会自动检测并安装缺失的依赖：
 
 ```bash
 python .claude/scripts/install.py
 ```
+
+脚本会自动检查 superpowers plugin 等依赖，已安装的会跳过，未安装的会提示安装。
 
 ### Step 1: 调用 Brainstorming
 

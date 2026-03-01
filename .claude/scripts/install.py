@@ -35,29 +35,50 @@ def run_command(
 ) -> subprocess.CompletedProcess:
     """执行命令"""
     try:
-        return subprocess.run(
-            cmd,
-            capture_output=capture,
-            text=True,
-            timeout=timeout,
-        )
+        # Windows 需要 shell=True 来正确执行某些命令
+        if sys.platform == 'win32':
+            return subprocess.run(
+                cmd,
+                capture_output=capture,
+                text=True,
+                timeout=timeout,
+                shell=True,
+            )
+        else:
+            return subprocess.run(
+                cmd,
+                capture_output=capture,
+                text=True,
+                timeout=timeout,
+            )
     except subprocess.TimeoutExpired:
         return subprocess.CompletedProcess(cmd, -1, "", "Command timed out")
     except FileNotFoundError:
         return subprocess.CompletedProcess(cmd, -1, "", f"Command not found: {cmd[0]}")
 
 
-def is_plugin_installed(plugin_name: str) -> bool:
-    """检查 Plugin 是否已安装"""
-    result = run_command(["claude", "/plugin"])
+def is_plugin_installed(plugin_name: str, plugin_id: Optional[str] = None) -> bool:
+    """检查 Plugin 是否已安装
+
+    Args:
+        plugin_name: 插件名称，如 "superpowers"
+        plugin_id: 插件完整 ID，如 "superpowers@superpowers-marketplace"
+    """
+    result = run_command(["claude", "plugin", "list"])
     if result.returncode != 0:
+        # 命令执行失败，假设未安装
         return False
-    return plugin_name.lower() in result.stdout.lower()
+
+    output = result.stdout
+    # 同时检测 plugin_id 和 plugin_name
+    if plugin_id and plugin_id in output:
+        return True
+    return plugin_name in output
 
 
 def is_marketplace_added(marketplace: str) -> bool:
     """检查 Marketplace 是否已添加"""
-    result = run_command(["claude", "/plugin", "marketplace", "list"])
+    result = run_command(["claude", "plugin", "marketplace", "list"])
     if result.returncode != 0:
         return False
     return marketplace in result.stdout
@@ -79,7 +100,7 @@ def add_marketplace(marketplace: str) -> bool:
 
     print(f"   📚 添加 Marketplace: {marketplace}")
     result = run_command(
-        ["claude", "/plugin", "marketplace", "add", marketplace], timeout=30
+        ["claude", "plugin", "marketplace", "add", marketplace], timeout=30
     )
 
     if result.returncode == 0 or "already" in result.stderr.lower():
@@ -99,8 +120,12 @@ def install_plugin(plugin: dict) -> bool:
 
     print(f"\n📦 Plugin: {name}")
 
+    # 获取 plugin_id（格式：name@scope）
+    package = plugin.get("package", "")
+    plugin_id = package if package else None
+
     # 检查是否已安装
-    if is_plugin_installed(name):
+    if is_plugin_installed(name, plugin_id):
         print(f"   ⏭️  已安装，跳过")
         return True
 
@@ -117,7 +142,7 @@ def install_plugin(plugin: dict) -> bool:
 
     print(f"   🔧 安装中...")
     result = run_command(
-        ["claude", "/plugin", "install", package], timeout=120
+        ["claude", "plugin", "install", package], timeout=120
     )
 
     if result.returncode == 0:
