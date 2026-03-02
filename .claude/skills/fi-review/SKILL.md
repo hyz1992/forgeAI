@@ -48,7 +48,7 @@ python .claude/scripts/validate.py constitution
 
 - [ ] 对照 `docs/architecture.md`：架构中列出的每个后端模块是否均已实现？
 - [ ] 对照 `docs/requirements.md`：需求中列出的每个前端页面是否均已实现？
-- [ ] 若存在未实现的模块或页面，**必须**在审查报告中标记为严重问题，并建议用户重新运行 `/implement` 补全。
+- [ ] 若存在未实现的模块或页面，**必须**在审查报告中标记为严重问题，并建议用户重新运行 `/fi-implement` 补全。
 
 #### 架构合规检查
 

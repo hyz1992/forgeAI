@@ -1,7 +1,7 @@
 ---
-name: implement
+name: fi-implement
 description: 根据测试用例生成实现代码
-trigger: /implement
+trigger: /fi-implement
 dependencies:
   - superpowers:test-driven-development
   - ui-ux-pro-max

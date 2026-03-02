@@ -25,7 +25,7 @@ references:
 
 1. 检查 `server/src/contracts/` 目录是否存在。
 2. 确认该目录下至少存在一个 `.ts` 类型定义文件（如 `api.types.ts`、`*.types.ts`、`index.ts` 等）。
-3. 若验证不通过，停止执行并提示用户先完成 `/contract` 阶段。
+3. 若验证不通过，停止执行并提示用户先完成 `/fi-contract` 阶段。
 
 ## 执行流程
 
@@ -179,7 +179,7 @@ ForgeAI 自动提交 - $(date '+%Y-%m-%d %H:%M:%S')"
 ```
 ✅ 测试用例已生成并确认
 ✅ 已提交到 git
-下一步：/implement 实现代码
+下一步：/fi-implement 实现代码
 ```
 
 ## 测试规范

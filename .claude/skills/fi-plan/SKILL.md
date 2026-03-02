@@ -168,7 +168,7 @@ ForgeAI 自动提交 - $(date '+%Y-%m-%d %H:%M:%S')"
 完成后提示：
 ```
 ✅ 架构设计已完成并提交到 git
-下一步：/contract 生成类型定义
+下一步：/fi-contract 生成类型定义
 ```
 
 ## 参考文档
@@ -181,7 +181,7 @@ ForgeAI 自动提交 - $(date '+%Y-%m-%d %H:%M:%S')"
 ## 输出
 
 - `docs/architecture.md` - 架构设计文档，**必须**包含「项目文件结构示例」章节
-- 等待用户确认后进入 `/contract` 阶段
+- 等待用户确认后进入 `/fi-contract` 阶段
 
 ## 失败处理
 

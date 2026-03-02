@@ -1,7 +1,7 @@
 ---
-name: video
+name: fi-video
 description: 使用 Remotion 生成视频内容
-trigger: /video
+trigger: /fi-video
 dependencies: []  # 可选：remotion, media-downloader 等外部工具
 ---
 
@@ -185,7 +185,7 @@ export const Subtitle: React.FC<SubtitleProps> = ({ text }) => {
 
 | 场景 | 协作方式 |
 |------|----------|
-| 视频脚本 | 先调用 `/content` 生成脚本 |
+| 视频脚本 | 先调用 `/fi-content` 生成脚本 |
 | 配音 | 调用 TTS 服务（qwen3-tts-flash） |
 | 素材 | 调用生图服务（wan2.6-t2i） |
 

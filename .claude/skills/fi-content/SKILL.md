@@ -1,7 +1,7 @@
 ---
-name: content
+name: fi-content
 description: 用于生成自媒体内容，如文章、脚本等
-trigger: /content
+trigger: /fi-content
 dependencies: []  # 可选：humanizer-zh, baoyu-skills 等外部工具
 ---
 
@@ -145,8 +145,8 @@ const result = await prompt.pipe(model).invoke({
 
 | 场景 | 协作方式 |
 |------|----------|
-| 文章配图 | 调用 `/video` 生图 |
-| 视频制作 | 调用 `/video` 生成视频 |
+| 文章配图 | 调用 `/fi-video` 生图 |
+| 视频制作 | 调用 `/fi-video` 生成视频 |
 | 内容发布 | 集成到项目 API |
 
 ## 输出

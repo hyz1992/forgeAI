@@ -1,7 +1,7 @@
 ---
-name: contract
+name: fi-contract
 description: 根据架构设计生成类型定义和接口合同
-trigger: /contract
+trigger: /fi-contract
 dependencies:
   - superpowers:writing-plans
 references:
