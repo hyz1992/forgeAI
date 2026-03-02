@@ -26,6 +26,13 @@ references:
 - Skill 调用
 - 网络请求
 
+**Git 自动提交**：每完成一个阶段后，自动执行一次 git commit（若有变更）：
+```bash
+git add -A && (git diff --cached --quiet || git commit -m "chore(fi-auto): {阶段名} 完成")
+```
+- 仅在存在变更时提交，避免空提交失败
+- 提交信息格式：`chore(fi-auto): fi-plan 完成`、`chore(fi-auto): contract 完成` 等
+
 仅在以下情况暂停：
 - 执行完成
 - 不可自动恢复的错误
@@ -73,7 +80,8 @@ references:
 - **全自动/阶段确认模式**：自动生成架构，记录到 `docs/.fi-auto-log.md`
 - **关键点确认模式**：生成架构后暂停，等待用户确认
 
-**输出**：`docs/architecture.md`
+**输出**：`docs/architecture.md`  
+**完成后**：自动 `git commit -m "chore(fi-auto): fi-plan 完成"`（若有变更）
 
 ### Phase 2: 类型定义
 
@@ -86,6 +94,8 @@ references:
 **输出**：
 - `server/src/contracts/`
 - `client/src/contracts/`（如适用）
+
+**完成后**：自动 `git commit -m "chore(fi-auto): contract 完成"`（若有变更）
 
 ### Phase 3: 测试生成
 
@@ -100,6 +110,8 @@ references:
 - `client/tests/`（如适用）
 - `server/src/mocks/`（如适用）
 
+**完成后**：自动 `git commit -m "chore(fi-auto): fi-test 完成"`（若有变更）
+
 ### Phase 4: 代码实现
 
 ```bash
@@ -112,6 +124,8 @@ references:
 - `server/src/modules/`
 - `client/src/`（如适用）
 
+**完成后**：自动 `git commit -m "chore(fi-auto): implement 完成"`（若有变更）
+
 ### Phase 5: 自动修复
 
 ```bash
@@ -122,6 +136,8 @@ references:
 
 **重试限制**：单类错误 3 次，总尝试 10 次
 
+**完成后**：自动 `git commit -m "chore(fi-auto): fi-fix 完成"`（若有变更）
+
 ### Phase 6: 代码审查
 
 ```bash
@@ -131,7 +147,8 @@ references:
 - **全自动/阶段确认模式**：自动生成审查报告
 - **关键点确认模式**：生成报告后暂停，等待用户确认
 
-**输出**：`docs/review-report.md`
+**输出**：`docs/review-report.md`  
+**完成后**：自动 `git commit -m "chore(fi-auto): fi-review 完成"`（若有变更）
 
 ### Phase 7: 运行时测试
 
@@ -144,7 +161,8 @@ references:
 - 运行 E2E 测试
 - UI 截图分析（可选）
 
-**输出**：`docs/runtime-test-report.md`
+**输出**：`docs/runtime-test-report.md`  
+**完成后**：自动 `git commit -m "chore(fi-auto): fi-run 完成"`（若有变更）
 
 ## 进度记录
 
@@ -177,11 +195,20 @@ references:
 | fi-fix | 类型错误 3 处 | 自动修复 | ✅ 已解决 |
 | fi-fix | 测试失败 2 处 | 自动修复 | ✅ 已解决 |
 
+## Git 提交记录
+
+| 阶段 | Commit 信息 | 时间 |
+|------|-------------|------|
+| fi-plan | chore(fi-auto): fi-plan 完成 | ... |
+| contract | chore(fi-auto): contract 完成 | ... |
+| ... | ... | ... |
+
 ## 统计
 
 - 总执行时间：XX 分钟
 - 自动修复次数：XX 次
 - 人工介入次数：XX 次
+- Git 提交次数：XX 次
 ```
 
 ## 错误处理
@@ -216,6 +243,7 @@ references:
 📊 执行统计：
 - 总耗时：XX 分钟
 - 生成文件：XX 个
+- Git 提交：XX 次（每阶段自动提交）
 - 测试覆盖率：XX%
 - E2E 测试：XX/XX 通过
 - 代码审查评分：XX/100
