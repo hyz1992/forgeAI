@@ -84,6 +84,18 @@ references:
   - CI/CD 流程
 - 风险与缓解
 
+### Step 3.5: 项目骨架（若不存在）
+
+若 `server/` 或 `client/` 不存在，或存在但缺少 `package.json`、`tsconfig.json` 等基础配置，**必须**生成项目骨架：
+
+- **全栈项目**：创建 `server/`（Fastify + Prisma + Vitest）和 `client/`（Vue 3 + Vite + Pinia + Vitest）
+- **后端项目**：创建 `server/` 及基础目录结构
+- **前端项目**：创建 `client/` 及基础目录结构
+
+骨架需包含：`package.json`、`tsconfig.json`、入口文件、基础路由/健康检查端点，以便 contract 和 fi-test 阶段可正常运行。
+
+参考 `shared-references/directory-structure.md` 和 `shared-references/tech-stack.md`。
+
 ### Step 4: 人工确认
 
 **暂停并提示用户确认：**

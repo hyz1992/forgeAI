@@ -33,9 +33,11 @@ references:
 ### Step 1: 读取架构设计
 
 1. 读取 `docs/architecture.md`
-2. 提取模块列表
-3. 识别数据实体
-4. 分析 API 接口
+2. **必须**提取**全部**模块列表（如 auth、user、topic、script、storyboard、asset、video、project、task 等），禁止遗漏
+3. 识别每个模块的数据实体
+4. 分析每个模块的 API 接口
+
+**覆盖要求**：架构中列出的每个模块都必须有对应的 `{module}.types.ts` 和 `{module}.schemas.ts`（如适用）。
 
 ### Step 2: 生成服务端类型定义
 
