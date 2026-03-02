@@ -82,6 +82,12 @@ references:
   - 数据库迁移策略
   - 多环境配置（开发/测试/生产）
   - CI/CD 流程
+- **项目文件结构示例**（必须）
+  - 基于 `shared-references/directory-structure.md` 的规范
+  - 结合本架构的**模块划分**和需求的**前端页面清单**，生成项目专属的目录树
+  - 后端：列出 `server/src/modules/` 下每个模块及其文件（如 `auth/auth.routes.ts`、`auth/auth.service.ts`）
+  - 前端：列出 `client/src/views/` 下每个页面、`client/src/api/`、`client/src/stores/` 等
+  - 供 contract、fi-test、implement 阶段明确生成目标，避免遗漏或歧义
 - 风险与缓解
 
 ### Step 3.5: 项目骨架（若不存在）
@@ -93,6 +99,37 @@ references:
 - **前端项目**：创建 `client/` 及基础目录结构
 
 骨架需包含：`package.json`、`tsconfig.json`、入口文件、基础路由/健康检查端点，以便 contract 和 fi-test 阶段可正常运行。
+
+**文件结构示例格式**（写入 architecture.md 时参考）：
+
+```markdown
+## 项目文件结构
+
+基于 directory-structure.md，结合本架构模块与需求页面，预期结构如下：
+
+server/src/
+├── modules/
+│   ├── auth/          # 对应架构模块 auth
+│   │   ├── auth.routes.ts
+│   │   ├── auth.service.ts
+│   │   └── index.ts
+│   ├── topic/         # 对应架构模块 topic
+│   │   └── ...
+│   └── ...            # 其他模块
+├── contracts/
+├── mocks/             # 如涉及外部服务
+└── ...
+
+client/src/
+├── views/             # 对应需求页面清单
+│   ├── Home.vue       # 首页
+│   ├── Create/        # 创作工作台
+│   │   └── Workspace.vue
+│   └── ...
+├── api/
+├── stores/
+└── ...
+```
 
 参考 `shared-references/directory-structure.md` 和 `shared-references/tech-stack.md`。
 
@@ -107,6 +144,7 @@ references:
 1. 架构是否符合预期？
 2. 模块划分是否合理？
 3. 技术选型是否正确？
+4. 项目文件结构示例是否覆盖全部模块和页面？
 
 回复 "确认" 继续，或提出修改意见。
 ```
@@ -142,7 +180,7 @@ ForgeAI 自动提交 - $(date '+%Y-%m-%d %H:%M:%S')"
 
 ## 输出
 
-- `docs/architecture.md` - 架构设计文档
+- `docs/architecture.md` - 架构设计文档，**必须**包含「项目文件结构示例」章节
 - 等待用户确认后进入 `/contract` 阶段
 
 ## 失败处理
