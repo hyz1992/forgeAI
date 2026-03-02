@@ -7,6 +7,7 @@ dependencies:
 references:
   - ../shared-references/testing-standards.md
   - ../shared-references/directory-structure.md
+  - ../shared-references/git-commit-standards.md
 ---
 
 # 测试生成 Skill
@@ -57,6 +58,33 @@ references:
 - Store 测试：`setActivePinia(createPinia())`，实例化 store，断言 state 与 action 结果。
 - 遵循 `shared-references/testing-standards.md` 中的 AAA 与命名规范。
 
+### Step 4.5: 生成外部服务 Mock（如适用）
+
+若项目涉及外部服务（AI 服务、第三方 API 等），**必须生成 Mock 支持**：
+
+**服务端 Mock：**
+- 在 `server/src/mocks/` 下为外部服务创建 Mock 实现
+- 提供 `mock-ai-service.ts`、`mock-payment-service.ts` 等
+- 使用环境变量控制 Mock 开关（如 `USE_MOCK_AI=true`）
+
+**前端 Mock：**
+- 在 `client/src/mocks/` 下为 API 调用创建 Mock
+- 使用 MSW (Mock Service Worker) 或简单的函数 Mock
+
+**测试配置：**
+- 测试环境默认使用 Mock
+- 集成测试可选择性启用真实服务
+
+### Step 4.6: 复杂 UI 流程测试（全栈项目）
+
+若项目包含复杂页面流程（如编辑器、设置向导、多步骤表单），**必须生成流程测试**：
+
+- **页面流程测试**：在 `client/tests/pages/` 下为复杂页面生成测试
+  - 测试用户交互序列
+  - 测试状态流转
+  - 测试边界情况（取消、返回、异常）
+- **E2E 场景骨架**：在 `client/tests/e2e/` 下生成关键流程的 E2E 测试骨架（使用 Playwright 或 Cypress）
+
 ### Step 5: 覆盖边界情况
 
 确保测试覆盖：
@@ -65,6 +93,28 @@ references:
 - 错误情况
 - 空值处理
 - 并发场景
+
+### Step 5.5: 横切关注点测试（如适用）
+
+若项目涉及横切关注点，**必须生成相关测试**：
+
+**权限测试：**
+- 在 `server/tests/unit/auth/` 下生成权限测试
+  - 测试角色权限边界
+  - 测试越权访问场景
+  - 测试资源所有权校验
+
+**缓存测试：**
+- 若使用缓存，在 `server/tests/unit/cache/` 下生成
+  - 测试缓存命中/未命中
+  - 测试缓存失效
+  - 测试缓存更新
+
+**实时通信测试：**
+- 若使用 WebSocket/SSE，在 `server/tests/integration/realtime/` 下生成
+  - 测试连接建立/断开
+  - 测试消息推送
+  - 测试重连机制
 
 ### Step 6: 生成后自动校验
 
@@ -89,6 +139,29 @@ references:
 
 - **若用户提出修改意见**：根据意见修正测试或需求理解，重新生成或更新测试文件，再次展示并重复本确认步骤，直至用户确认或明确结束。
 
+### Step 8: Git 提交
+
+用户确认后，自动提交到 git（如果项目是 git 仓库）：
+
+```bash
+git add . && \
+git commit -m "test: 添加测试用例
+
+- 生成服务端测试 server/tests/
+- 生成前端测试 client/tests/（如适用）
+- 生成外部服务 Mock（如适用）
+- 生成 E2E 测试骨架（如适用）
+
+ForgeAI 自动提交 - $(date '+%Y-%m-%d %H:%M:%S')"
+```
+
+完成后提示：
+```
+✅ 测试用例已生成并确认
+✅ 已提交到 git
+下一步：/implement 实现代码
+```
+
 ## 测试规范
 
 参考 `shared-references/testing-standards.md`：
@@ -112,6 +185,10 @@ server/tests/
 └── integration/
     └── api/
         └── {module}.api.test.ts
+
+server/src/mocks/              # 外部服务 Mock（如适用）
+├── mock-ai-service.ts
+└── mock-payment-service.ts
 ```
 
 **前端（全栈项目）：**
@@ -122,8 +199,16 @@ client/tests/
 │   └── {ComponentName}.spec.ts   # 或 .test.ts
 ├── stores/
 │   └── {storeName}.spec.ts
-└── composables/
-    └── {composableName}.spec.ts
+├── composables/
+│   └── {composableName}.spec.ts
+├── pages/                        # 复杂页面流程测试
+│   └── {PageName}.spec.ts
+└── e2e/                          # E2E 测试骨架（如适用）
+    └── {flow}.spec.ts
+
+client/src/mocks/                 # API Mock（如适用）
+├── handlers.ts
+└── browser.ts
 ```
 
 （生成后校验已在 Step 4.5 中执行：确保测试可运行且仅因未实现而失败，再进入人工确认。）

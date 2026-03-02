@@ -4,9 +4,11 @@ description: 根据测试用例生成实现代码
 trigger: /implement
 dependencies:
   - superpowers:test-driven-development
+  - ui-ux-pro-max
 references:
   - ../shared-references/constitution.md
   - ../shared-references/directory-structure.md
+  - ../shared-references/git-commit-standards.md
 ---
 
 # 代码实现 Skill
@@ -61,16 +63,41 @@ references:
 
 ### Step 3: 前端实现（全栈项目）
 
-若项目包含前端（`client/` 存在且有测试），对于每个前端测试文件：
+若项目包含前端（`client/` 存在且有测试），**先调用 `@ui-ux-pro-max`** 获取前端开发最佳实践指导，然后对于每个前端测试文件：
 1. 运行测试，查看失败原因
 2. 编写最小实现使测试通过
 3. 运行测试，确认通过
 4. 重构代码（可选）
 
-**前端实现要点：**
+**前端实现要点（遵循 ui-ux-pro-max 规范）：**
 - API 请求使用 `fetch` 或 `axios`，类型来自 `client/src/contracts/`
 - Store 使用 Pinia，遵循 Composition API 风格
 - 组件使用 `<script setup lang=”ts”>` 语法
+- 组件设计遵循单一职责、合理的 props 定义、清晰的事件命名
+- 状态管理遵循最小化原则，避免冗余状态
+- 样式使用 Tailwind CSS 或 Scoped CSS，保持一致性
+- 可访问性：语义化标签、键盘导航、ARIA 属性
+
+### Step 3.5: 外部服务集成（如适用）
+
+若项目涉及外部服务（AI 服务、第三方 API 等）：
+
+1. **配置环境变量**
+   - 在 `server/.env` 中添加 API Key 配置
+   - 使用 `zod` 验证环境变量完整性
+
+2. **实现服务客户端**
+   - 在 `server/src/services/` 下为外部服务创建客户端
+   - 如 `ai-service.ts`、`payment-service.ts`
+   - 实现错误处理和重试逻辑
+
+3. **替换 Mock 为真实实现**
+   - 根据环境变量切换 Mock/真实服务
+   - 保持接口一致性
+
+4. **编写集成测试**
+   - 在 `server/tests/integration/` 下为外部服务编写集成测试
+   - 使用真实 API 进行验证（可选，需配置 API Key）
 
 ### Step 4: 持续验证
 
@@ -94,8 +121,32 @@ cd client && npx vitest run
 
 执行范围：若存在 `server/` 或 `client/` 且其下有 `package.json` 或 `vitest.config.*` / `tsconfig.json`，则在各自目录下执行；否则在根目录执行。
 
-- **全部通过**：提示”实现完成，可进行 /fi-review 或先运行 /fi-fix 处理其他问题”。
+- **全部通过**：继续下一步。
 - **任一项失败**：继续修复或建议用户运行 `/fi-fix`，**不得**将本次会话标记为实现完成。
+
+### Step 6: Git 提交
+
+终验通过后，自动提交到 git（如果项目是 git 仓库）：
+
+```bash
+git add . && \
+git commit -m “feat: 完成功能实现
+
+- 服务端模块实现 server/src/modules/
+- 前端实现 client/src/（如适用）
+- 外部服务集成（如适用）
+- 所有测试通过
+
+ForgeAI 自动提交 - $(date '+%Y-%m-%d %H:%M:%S')”
+```
+
+完成后提示：
+```
+✅ 功能实现完成
+✅ 所有测试通过
+✅ 已提交到 git
+下一步：/fi-fix 处理遗留问题 或 /fi-review 代码审查
+```
 
 ## 实现原则
 
@@ -118,6 +169,14 @@ server/src/modules/
     ├── {module}.controller.ts
     ├── {module}.routes.ts
     └── index.ts
+
+server/src/services/           # 外部服务客户端（如适用）
+├── ai-service.ts
+├── payment-service.ts
+└── index.ts
+
+server/src/config/             # 环境变量配置（如适用）
+└── env.ts
 ```
 
 **前端（全栈项目）：**
@@ -137,5 +196,7 @@ client/src/
     └── {module}/
         └── index.vue
 ```
+
+（终验已在 Step 6 完成前终验中执行。）
 
 （终验已在 Step 5 完成前终验中执行。）

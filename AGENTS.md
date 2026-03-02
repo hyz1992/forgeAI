@@ -12,6 +12,8 @@
 
 ## 开发流程顺序
 
+### 逐步执行模式
+
 1. **需求**：用户只需提供产品/项目的粗略想法，执行 **/fi-init** 后通过对话自动生成 `docs/requirements.md`，生成后**自动运行** `validate.py requirement` 做校验。校验通过再进入下一步，避免下游阶段（架构、合同、测试）拿到残缺需求而产生错误输出。
 2. **架构**：根据需求生成 `docs/architecture.md`（/fi-plan）。
 3. **合同**：根据架构生成 `server/src/contracts/` 下的 TypeScript 类型（/contract）。
@@ -19,6 +21,23 @@
 5. **实现**：根据测试实现业务代码（/implement）。
 6. **修复**：修复类型/测试/CI 问题（/fi-fix）。
 7. **审查**：代码质量门控（/fi-review）。
+
+### 全自动模式（推荐）
+
+完成 **/fi-init** 需求收集后，执行 **/fi-auto** 可自动完成步骤 2-7：
+
+```
+/fi-init   →  需求收集（用户参与）
+    ↓
+/fi-auto   →  自动执行：架构 → 合同 → 测试 → 实现 → 修复 → 审查
+    ↓
+  完成 ✅
+```
+
+**执行模式**：
+- **全自动**：所有阶段自动执行，仅在完成或出错时暂停
+- **阶段确认**：每个阶段完成后暂停，允许检查后再继续
+- **关键点确认**：仅在架构设计和代码审查阶段暂停确认
 
 **项目骨架约定**：`/implement` 与 `/fi-test` 需要可运行的 TypeScript/Vitest 环境。项目骨架（如 `server/`、`client/` 下的 `package.json`、`tsconfig.json`、`vitest.config.*`）应在 **fi-plan 确认后、contract 之前** 由用户或脚本生成；或在使用本框架前已存在。contract 会按需创建 `server/src/contracts/` 目录，但不会创建整个工程骨架。
 

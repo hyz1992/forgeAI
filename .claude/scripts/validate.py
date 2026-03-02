@@ -6,7 +6,7 @@
 校验需求文档和宪法文档的完整性。
 
 **需求文档严格校验的原因**：确保下游阶段（/fi-plan 架构、/contract 类型、/fi-test 测试）
-拿到的输入具备必备字段（项目名称、目标、核心功能、验收标准等），避免「残缺需求 → 架构空泛
+拿到的输入具备必备字段（项目名称、目标、类型、技术栈、核心功能、验收标准等），避免「残缺需求 → 架构空泛
 → 合同/测试/实现连锁偏差」。校验在 /fi-init 生成需求后自动执行，不通过则提示补全再继续。
 
 使用方法:
@@ -88,6 +88,18 @@ def parse_markdown_to_dict(content: str) -> dict:
                         result["project"]["goal"] = value
                     elif "类型" in key:
                         result["project"]["type"] = value
+                    elif "技术栈" in key or "后端" in key or "前端" in key:
+                        # 收集技术栈信息
+                        if "tech_stack" not in result["project"]:
+                            result["project"]["tech_stack"] = {}
+                        if "后端" in key:
+                            result["project"]["tech_stack"]["backend"] = value
+                        elif "前端" in key:
+                            result["project"]["tech_stack"]["frontend"] = value
+                        elif "数据库" in key:
+                            result["project"]["tech_stack"]["database"] = value
+                        elif "技术栈" in key:
+                            result["project"]["tech_stack"]["specified"] = True
 
         elif current_section == "features" and current_feature:
             if line.startswith("**描述") and (":" in line or "：" in line):
@@ -129,6 +141,10 @@ def validate_requirement() -> bool:
         errors.append("缺少项目名称")
     if not data["project"].get("goal"):
         errors.append("缺少项目目标")
+    if not data["project"].get("type"):
+        errors.append("缺少项目类型")
+    if not data["project"].get("tech_stack"):
+        errors.append("缺少技术栈")
     if not data["features"]:
         errors.append("缺少核心功能")
     if not data["acceptance"]:

@@ -8,6 +8,7 @@ references:
   - ../shared-references/constitution.md
   - ../shared-references/tech-stack.md
   - ../shared-references/directory-structure.md
+  - ../shared-references/git-commit-standards.md
 ---
 
 # 类型与接口合同 Skill
@@ -67,8 +68,30 @@ references:
 生成 contracts 后**必须自动执行**（无需用户手动运行）：
 
 - 在包含 `tsconfig.json` 的目录执行 `npx tsc --noEmit`（若存在 `server/tsconfig.json` 则在 server 下执行，同理 client 或根目录）。
-- **通过**：结束并提示下一步执行 `/fi-test`。
+- **通过**：继续下一步。
 - **失败**：根据类型报错修正类型或代码，再次运行上述命令，直至通过后再结束。
+
+### Step 7: Git 提交
+
+校验通过后，自动提交到 git（如果项目是 git 仓库）：
+
+```bash
+git add . && \
+git commit -m "feat(contracts): 添加类型定义
+
+- 生成服务端类型定义 server/src/contracts/
+- 生成前端类型定义 client/src/contracts/（如适用）
+- 添加 Zod Schema 验证
+
+ForgeAI 自动提交 - $(date '+%Y-%m-%d %H:%M:%S')"
+```
+
+完成后提示：
+```
+✅ 类型定义已生成并校验通过
+✅ 已提交到 git
+下一步：/fi-test 生成测试用例
+```
 
 ## 类型设计原则
 

@@ -7,6 +7,7 @@ dependencies:
 references:
   - ../shared-references/ci-standards.md
   - ../shared-references/coding-standards.md
+  - ../shared-references/git-commit-standards.md
 ---
 
 # 自动修复 Skill
@@ -76,6 +77,28 @@ npx vitest run && npx tsc --noEmit && npx eslint .
 ```
 
 如果仍有错误，重复 Step 2-4。
+
+### Step 6: Git 提交
+
+所有错误修复完成后，自动提交到 git（如果项目是 git 仓库）：
+
+```bash
+git add . && \
+git commit -m "fix: 自动修复测试和类型错误
+
+- 修复类型错误
+- 修复测试失败
+- 修复 Lint 问题
+
+ForgeAI 自动提交 - $(date '+%Y-%m-%d %H:%M:%S')"
+```
+
+完成后提示：
+```
+✅ 所有错误已修复
+✅ 已提交到 git
+下一步：/fi-review 代码审查
+```
 
 ## 重试限制
 

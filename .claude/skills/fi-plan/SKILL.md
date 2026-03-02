@@ -8,6 +8,7 @@ references:
   - ../shared-references/constitution.md
   - ../shared-references/tech-stack.md
   - ../shared-references/directory-structure.md
+  - ../shared-references/git-commit-standards.md
 ---
 
 # 架构设计 Skill
@@ -63,6 +64,24 @@ references:
 - 技术栈
 - 数据流
 - API 设计
+- **外部服务集成**（如适用）
+  - 服务列表（AI 服务、第三方 API 等）
+  - 配置方式（环境变量、配置文件）
+  - Mock 策略（开发/测试环境）
+  - 集成测试计划
+- **横切关注点**（如适用）
+  - 权限控制方案（RBAC/ABAC/简单角色）
+  - 审计日志方案
+  - 缓存策略
+  - 错误处理统一方案
+- **复杂交互处理**（如适用）
+  - 多步骤表单状态管理
+  - 实时通信方案（WebSocket/SSE）
+  - 复杂 UI 组件设计
+- **基础设施**（如适用）
+  - 数据库迁移策略
+  - 多环境配置（开发/测试/生产）
+  - CI/CD 流程
 - 风险与缓解
 
 ### Step 4: 人工确认
@@ -81,6 +100,26 @@ references:
 ```
 
 - **若用户提出修改意见**：根据意见更新 `docs/architecture.md`，再次展示并重复本确认步骤，直至用户确认或明确结束。
+
+### Step 5: Git 提交
+
+用户确认后，自动提交到 git（如果项目是 git 仓库）：
+
+```bash
+git add . && \
+git commit -m "docs: 完成架构设计
+
+- 生成 docs/architecture.md
+- 系统架构、模块划分、技术栈已确定
+
+ForgeAI 自动提交 - $(date '+%Y-%m-%d %H:%M:%S')"
+```
+
+完成后提示：
+```
+✅ 架构设计已完成并提交到 git
+下一步：/contract 生成类型定义
+```
 
 ## 参考文档
 

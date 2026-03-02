@@ -10,5 +10,11 @@
     "package": "jimliu/baoyu-skills",
     "global": true,
     "description": "内容生成工具包"
+  },
+  {
+    "name": "ui-ux-pro-max",
+    "package": "mamerteddx/ui-ux-pro-max",
+    "global": true,
+    "description": "前端开发最佳实践（组件设计、状态管理、样式规范、可访问性）"
   }
 ]
