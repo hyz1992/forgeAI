@@ -16,6 +16,7 @@ import sys
 import re
 import io
 import platform
+import time
 from pathlib import Path
 from typing import Optional
 
@@ -31,14 +32,19 @@ SKILLS_FILE = BASE_DIR / "skills.json"
 
 
 def run_command(
-    cmd: list[str], capture: bool = True, timeout: int = 60
+    cmd: list[str], capture: bool = True, timeout: int = 60, verbose: bool = False
 ) -> subprocess.CompletedProcess:
-    """执行命令"""
+    """执行命令，带耗时日志"""
+    cmd_str = " ".join(cmd) if isinstance(cmd, list) else cmd
+    if verbose:
+        print(f"   ⏱️  执行: {cmd_str}")
+    start_time = time.time()
+
     try:
         # Windows 需要 shell=True 来正确执行某些命令
         # 显式指定 UTF-8 编码避免 GBK 解码错误
         if sys.platform == 'win32':
-            return subprocess.run(
+            result = subprocess.run(
                 cmd,
                 capture_output=capture,
                 text=True,
@@ -48,7 +54,7 @@ def run_command(
                 errors='replace',
             )
         else:
-            return subprocess.run(
+            result = subprocess.run(
                 cmd,
                 capture_output=capture,
                 text=True,
@@ -56,29 +62,51 @@ def run_command(
                 encoding='utf-8',
                 errors='replace',
             )
+
+        elapsed = time.time() - start_time
+        if verbose:
+            print(f"   ✅ 完成: {elapsed:.2f}s")
+        return result
     except subprocess.TimeoutExpired:
+        elapsed = time.time() - start_time
+        if verbose:
+            print(f"   ⏱️  超时: {elapsed:.2f}s")
         return subprocess.CompletedProcess(cmd, -1, "", "Command timed out")
     except FileNotFoundError:
+        elapsed = time.time() - start_time
+        if verbose:
+            print(f"   ❌ 命令未找到: {cmd[0]}")
         return subprocess.CompletedProcess(cmd, -1, "", f"Command not found: {cmd[0]}")
 
 
-def is_plugin_installed(plugin_name: str, plugin_id: Optional[str] = None) -> bool:
+def is_plugin_installed(plugin_name: str, plugin_id: Optional[str] = None, verbose: bool = False) -> bool:
     """检查 Plugin 是否已安装
 
     Args:
         plugin_name: 插件名称，如 "superpowers"
         plugin_id: 插件完整 ID，如 "superpowers@superpowers-marketplace"
+        verbose: 是否显示耗时
     """
-    result = run_command(["claude", "plugin", "list"])
+    start_time = time.time()
+    result = run_command(["claude", "plugin", "list"], verbose=verbose)
+    elapsed = time.time() - start_time
+
     if result.returncode != 0:
         # 命令执行失败，假设未安装
+        if verbose:
+            print(f"   ⚠️ 检查失败 ({elapsed:.2f}s)")
         return False
 
     output = result.stdout
     # 同时检测 plugin_id 和 plugin_name
     if plugin_id and plugin_id in output:
+        if verbose:
+            print(f"   ✅ 已安装 ({elapsed:.2f}s)")
         return True
-    return plugin_name in output
+    found = plugin_name in output
+    if verbose:
+        print(f"   {'✅ 已安装' if found else '❌ 未安装'} ({elapsed:.2f}s)")
+    return found
 
 
 def is_marketplace_added(marketplace: str) -> bool:
@@ -89,12 +117,20 @@ def is_marketplace_added(marketplace: str) -> bool:
     return marketplace in result.stdout
 
 
-def is_skill_installed(skill_name: str) -> bool:
+def is_skill_installed(skill_name: str, verbose: bool = False) -> bool:
     """检查 Skill 是否已安装"""
-    result = run_command(["npx", "skills", "list"])
+    start_time = time.time()
+    result = run_command(["npx", "skills", "list"], verbose=verbose)
+    elapsed = time.time() - start_time
+
     if result.returncode != 0:
+        if verbose:
+            print(f"   ⚠️ 检查失败 ({elapsed:.2f}s)")
         return False
-    return skill_name.lower() in result.stdout.lower()
+    found = skill_name.lower() in result.stdout.lower()
+    if verbose:
+        print(f"   {'✅ 已安装' if found else '❌ 未安装'} ({elapsed:.2f}s)")
+    return found
 
 
 def add_marketplace(marketplace: str) -> bool:
@@ -147,7 +183,7 @@ def install_plugin(plugin: dict) -> bool:
 
     print(f"   🔧 安装中...")
     result = run_command(
-        ["claude", "plugin", "install", package], timeout=120
+        ["claude", "plugin", "install", package], timeout=120, verbose=True
     )
 
     if result.returncode == 0:
@@ -192,7 +228,7 @@ def install_skill(skill: dict) -> bool:
         cmd.extend(["-a", agent])
 
     print(f"   🔧 安装中...")
-    result = run_command(cmd, timeout=120)
+    result = run_command(cmd, timeout=120, verbose=True)
 
     if result.returncode == 0:
         print(f"   ✅ 安装成功")
@@ -292,10 +328,14 @@ def install_git_hooks() -> bool:
     # 确保 hooks 目录存在
     git_hooks_dir.mkdir(parents=True, exist_ok=True)
 
-    # 要安装的 hooks
+    # 要安装的 hooks（目前为空，pre-commit.py 已移除）
     hooks_to_install = [
-        ("pre-commit", BASE_DIR.parent / "hooks" / "pre-commit.py"),
+        # ("pre-commit", BASE_DIR.parent / "hooks" / "pre-commit.py"),
     ]
+
+    if not hooks_to_install:
+        print("   ⏭️  无 hooks 需要安装，跳过")
+        return True
 
     installed = 0
     for hook_name, hook_source in hooks_to_install:
@@ -379,7 +419,6 @@ def main():
     stats = {
         "plugin": {"total": len(plugins), "success": 0},
         "skill": {"total": len(skills), "success": 0},
-        "git_hooks": {"total": 1, "success": 0}
     }
 
     # 安装 Plugins
@@ -402,10 +441,6 @@ def main():
             if install_skill(skill):
                 stats["skill"]["success"] += 1
 
-    # 安装 Git Hooks
-    if install_git_hooks():
-        stats["git_hooks"]["success"] = 1
-
     # 汇总
     print("\n" + "=" * 60)
     print("📊 安装结果")
@@ -425,14 +460,8 @@ def main():
             else f"Skills:    {stats['skill']['success']}/{stats['skill']['total']} ❌"
         )
 
-    print(
-        f"Git Hooks: {stats['git_hooks']['success']}/{stats['git_hooks']['total']} ✅"
-        if stats["git_hooks"]["success"] == stats["git_hooks"]["total"]
-        else f"Git Hooks: {stats['git_hooks']['success']}/{stats['git_hooks']['total']} ❌"
-    )
-
-    total_success = stats["plugin"]["success"] + stats["skill"]["success"] + stats["git_hooks"]["success"]
-    total_count = stats["plugin"]["total"] + stats["skill"]["total"] + stats["git_hooks"]["total"]
+    total_success = stats["plugin"]["success"] + stats["skill"]["success"]
+    total_count = stats["plugin"]["total"] + stats["skill"]["total"]
 
     print("=" * 60)
 

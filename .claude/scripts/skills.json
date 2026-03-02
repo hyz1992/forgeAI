@@ -13,7 +13,7 @@
   },
   {
     "name": "ui-ux-pro-max",
-    "package": "mamerteddx/ui-ux-pro-max",
+    "package": "nextlevelbuilder/ui-ux-pro-max-skill",
     "global": true,
     "description": "前端开发最佳实践（组件设计、状态管理、样式规范、可访问性）"
   }
