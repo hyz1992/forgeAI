@@ -48,7 +48,30 @@ references:
 - `{module}.schemas.ts` - Zod 验证
 - `index.ts` - 统一导出
 
-### Step 3: 生成前端类型定义（全栈项目）
+### Step 2.5: 生成中间件/横切关注点类型（如适用）
+
+**执行条件**：读取 `docs/architecture.md` 的「横切关注点」章节，若包含权限、配额、错误处理、请求验证等，则本步骤为**必须执行**。
+
+在 `server/src/contracts/` 下生成 `middleware.types.ts`（或 `common.types.ts`），包含：
+- `QuotaConfig`、`QuotaUsage` — 配额配置与用量
+- `ErrorResponse`、`ApiError`、`ValidationError` — 统一错误响应格式
+- `AuthContext`、`JwtPayload` — 认证上下文（若涉及权限）
+- 其他横切关注点相关的类型定义
+
+这些类型将供 `server/src/middlewares/` 下的中间件实现使用。
+
+### Step 3: 生成适配器接口（如涉及外部服务）
+
+**执行条件**：读取 `docs/requirements.md` 的「AI 服务需求」和「外部服务集成」章节，若列出了任何外部服务，则本步骤为**必须执行**。
+
+1. 在 `server/src/contracts/` 下生成适配器接口文件（如 `adapters.interfaces.ts` 或按服务拆分 `llm.adapter.ts`、`image.adapter.ts`、`tts.adapter.ts`）
+2. 为每个外部服务定义接口，示例：
+   - `ILLMAdapter`：`generateTopics`、`generateScript`、`reviewScript` 等
+   - `IImageAdapter`：`generate(prompt, options)` 等
+   - `ITTSAdapter`：`synthesize(text, options)` 等
+3. 这些接口将作为 fi-implement 阶段实现适配器的合同，禁止 service 直接依赖 mock
+
+### Step 4: 生成前端类型定义（全栈项目）
 
 若项目包含前端（`client/` 存在），在 `client/src/contracts/` 下生成：
 - `api.types.ts` - API 请求/响应类型（与服务端保持一致）
@@ -57,15 +80,15 @@ references:
 
 **类型共享原则**：前端类型应与服务端保持一致，可从服务端 contracts 复制或使用 monorepo 共享包。
 
-### Step 4: 生成接口定义
+### Step 5: 生成接口定义
 
 定义 Repository 和 Service 接口。
 
-### Step 5: 生成 Zod Schema
+### Step 6: 生成 Zod Schema
 
 用于请求验证的 Zod Schema。
 
-### Step 6: 生成后校验
+### Step 7: 生成后校验
 
 生成 contracts 后**必须自动执行**（无需用户手动运行）：
 
@@ -73,7 +96,7 @@ references:
 - **通过**：继续下一步。
 - **失败**：根据类型报错修正类型或代码，再次运行上述命令，直至通过后再结束。
 
-### Step 7: Git 提交
+### Step 8: Git 提交
 
 校验通过后，自动提交到 git（如果项目是 git 仓库）：
 
@@ -114,6 +137,8 @@ server/src/contracts/
 ├── {module}.types.ts
 ├── {module}.interfaces.ts
 ├── {module}.schemas.ts
+├── middleware.types.ts     # 或 common.types.ts（如架构含横切关注点）
+├── adapters.interfaces.ts  # 或 llm.adapter.ts、image.adapter.ts 等（如涉及外部服务）
 └── index.ts
 ```
 
@@ -126,4 +151,4 @@ client/src/contracts/
 └── index.ts
 ```
 
-（终验已在 Step 6 中执行，此处不再重复。）
+（终验已在 Step 7 中执行，此处不再重复。）

@@ -50,6 +50,24 @@ python .claude/scripts/validate.py constitution
 - [ ] 对照 `docs/requirements.md`：需求中列出的每个前端页面是否均已实现？
 - [ ] 若存在未实现的模块或页面，**必须**在审查报告中标记为严重问题，并建议用户重新运行 `/fi-implement` 补全。
 
+#### 实现深度检查（必须）
+
+**外部服务集成检查**（当 `docs/requirements.md` 列有 AI 服务时）：
+- [ ] `server/src/adapters/` 下是否存在真实适配器（非简单 mock 封装）？
+- [ ] 适配器文件中是否包含真实 API 调用代码（fetch/SDK 调用）？
+- [ ] Service 文件中是否**不** import `server/src/mocks/`？
+- [ ] 若发现 service 直接使用 mock，标记为**严重问题**
+
+**前端实现深度检查**：
+- [ ] 每个 Vue 页面文件是否超过 20 行（排除纯占位）？
+- [ ] `client/src/stores/` 是否存在且包含 store 文件？
+- [ ] `client/src/api/` 是否包含业务 API 模块（非仅 index.ts）？
+- [ ] 若发现页面只有标题文字，标记为**严重问题**
+
+**Mock 隔离检查**：
+- [ ] `server/src/modules/**/*.ts` 中是否存在 `from '../../mocks/'` 或类似的 mock 导入？
+- [ ] 若存在，标记为**严重问题**，建议重新运行 fi-implement
+
 #### 架构合规检查
 
 - [ ] 模块是否符合 contracts 定义？

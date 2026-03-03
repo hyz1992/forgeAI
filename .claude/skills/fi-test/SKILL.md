@@ -68,6 +68,11 @@ references:
 
 若项目涉及外部服务（AI 服务、第三方 API 等），**必须生成 Mock 支持**：
 
+**重要**：`server/src/mocks/` 下的 Mock 文件**仅供测试使用**。
+禁止在 `server/src/modules/` 的 service 实现代码中直接 import 这些 mock。
+Service 必须通过适配器接口（定义在 contracts 中）调用外部服务，
+适配器的真实实现位于 `server/src/adapters/`。
+
 **服务端 Mock：**
 - 在 `server/src/mocks/` 下为外部服务创建 Mock 实现
 - 提供 `mock-ai-service.ts`、`mock-payment-service.ts` 等
